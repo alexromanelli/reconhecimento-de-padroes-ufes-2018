@@ -57,8 +57,8 @@ def shuffleArrays(D, C):
     return d, c
     
 def dividirTreinamentoTeste(D, C):
-    dados_treinamento = np.empty([0, 20, 50])
-    dados_teste = np.empty([0, 20, 50])
+    dados_treinamento = np.empty([0, 20, 50, 1])
+    dados_teste = np.empty([0, 20, 50, 1])
     classes_treinamento = np.empty([0, 21])
     classes_teste = np.empty([0, 21])
     # dividir as 500h iniciais entre treinamento e teste (80%, 20%)
@@ -77,7 +77,7 @@ def dividirTreinamentoTeste(D, C):
         # primeira simulação da falha
         indInicioFalha = tamEstadoNormal + indInicioSimulacaoFalhas + (f - 1) * (tamEstadoNormal + tamEstadoFalha)
         indFimFalha = indInicioFalha + tamEstadoFalha
-        falha = D[indInicioFalha:indFimFalha,:,:]
+        falha = D[indInicioFalha:indFimFalha,:,:,:]
         classe_falha = C[indInicioFalha:indFimFalha,:]
         # 80% para treinamento, 20% para testes
         d_trein, d_teste, c_trein, c_teste = train_test_split(falha, classe_falha, train_size=0.8)
@@ -89,7 +89,7 @@ def dividirTreinamentoTeste(D, C):
         for i in range(1, 10):
             indInicioFalha = indInicioFalha + i * (tamEstadoFalha + tamEstadoNormal)
             indFimFalha = indInicioFalha + tamEstadoFalha
-            falha = D[indInicioFalha:indFimFalha,:,:]
+            falha = D[indInicioFalha:indFimFalha,:,:,:]
             classe_falha = C[indInicioFalha:indFimFalha,:]
             # 80% para treinamento, 20% para testes
             d_trein, d_teste, c_trein, c_teste = train_test_split(falha, classe_falha, train_size=0.8)
@@ -187,7 +187,7 @@ X = np.delete(X, [4, 8, 11], axis=1)
 print(X.shape)
 
 # reajustar os dados para ficarem organizados em grupos de 1h
-X = np.reshape(X, (-1, 20, 50))
+X = np.reshape(X, (-1, 20, 50, 1))
 # manter em Y apenas os primeiros valores de cada grupo de 20 linhas (= 1h)
 Y = np.reshape(Y, (-1, 20, 21))[:,0,:]
 
@@ -246,3 +246,4 @@ cnn_model.compile(loss=keras.losses.categorical_crossentropy,
                   metrics=['accuracy'])
 cnn_model.summary()
 
+cnn_model.fit(X_train, Y_train, batch_size=batch_size, epochs=epochs, verbose=1, validation_data=(X_test, Y_test))
