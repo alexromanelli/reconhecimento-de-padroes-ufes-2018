@@ -102,47 +102,6 @@ def dividirTreinamentoTeste(D, C):
     dados_teste, classes_teste = shuffleArrays(dados_teste, classes_teste)
     return dados_treinamento, classes_treinamento, dados_teste, classes_teste
 
-batch_size = 64
-epochs = 20
-# TE simulation: 21 classes
-num_classes = 21
-
-# Model 7
-cnn_model = Sequential()
-cnn_model.add(Conv2D(64, 
-                     kernel_size=(3, 3),
-                     activation='linear',
-                     input_shape=(20, 50, 1),
-                     padding='same'))
-cnn_model.add(LeakyReLU(alpha=0.1))
-cnn_model.add(Conv2D(64, (3, 3), 
-                     activation='linear',
-                     padding='same'))
-cnn_model.add(LeakyReLU(alpha=0.1))
-cnn_model.add(MaxPooling2D(pool_size=(2, 2),
-                           strides=2,
-                           padding='same'))
-cnn_model.add(Conv2D(128, 
-                     (3, 3), 
-                     activation='linear',
-                     padding='same'))
-cnn_model.add(LeakyReLU(alpha=0.1))                  
-cnn_model.add(MaxPooling2D(pool_size=(2, 1),
-                           strides=2,
-                           padding='same'))
-cnn_model.add(Flatten())
-cnn_model.add(Dense(300, 
-                    activation='linear'))
-cnn_model.add(LeakyReLU(alpha=0.1))           
-cnn_model.add(Dropout(0.5))       
-cnn_model.add(Dense(num_classes, 
-                    activation='softmax'))
-
-cnn_model.compile(loss=keras.losses.categorical_crossentropy, 
-                  optimizer=keras.optimizers.Adam(),
-                  metrics=['accuracy'])
-cnn_model.summary()
-
 # Data
 nome_arq = "TE-simulations/out/te_simulation_{:02d}_50.csv"
 X = np.empty([0, 53])
@@ -242,4 +201,48 @@ print 'X_train.shape: ', X_train.shape
 print 'Y_train.shape: ', Y_train.shape
 print 'X_test.shape: ', X_test.shape
 print 'Y_test.shape: ', Y_test.shape
+
+# -----------------------------------------------------------------------------
+# Deep Convolutional Neural Network
+# -----------------------------------------------------------------------------
+batch_size = 64
+epochs = 20
+# TE simulation: 21 classes
+num_classes = 21
+
+# Model 7
+cnn_model = Sequential()
+cnn_model.add(Conv2D(64, 
+                     kernel_size=(3, 3),
+                     activation='linear',
+                     input_shape=(20, 50, 1),
+                     padding='same'))
+cnn_model.add(LeakyReLU(alpha=0.1))
+cnn_model.add(Conv2D(64, (3, 3), 
+                     activation='linear',
+                     padding='same'))
+cnn_model.add(LeakyReLU(alpha=0.1))
+cnn_model.add(MaxPooling2D(pool_size=(2, 2),
+                           strides=2,
+                           padding='same'))
+cnn_model.add(Conv2D(128, 
+                     (3, 3), 
+                     activation='linear',
+                     padding='same'))
+cnn_model.add(LeakyReLU(alpha=0.1))                  
+cnn_model.add(MaxPooling2D(pool_size=(2, 1),
+                           strides=2,
+                           padding='same'))
+cnn_model.add(Flatten())
+cnn_model.add(Dense(300, 
+                    activation='linear'))
+cnn_model.add(LeakyReLU(alpha=0.1))           
+cnn_model.add(Dropout(0.5))       
+cnn_model.add(Dense(num_classes, 
+                    activation='softmax'))
+
+cnn_model.compile(loss=keras.losses.categorical_crossentropy, 
+                  optimizer=keras.optimizers.Adam(),
+                  metrics=['accuracy'])
+cnn_model.summary()
 
