@@ -6,6 +6,7 @@ Created on Mon Jun 18 18:17:57 2018
 @author: Alexandre Romanelli, Antonio Luiz da Silva Loca
 """
 
+import os
 import sys
 import csv
 import numpy as np
@@ -16,6 +17,8 @@ from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras.layers.normalization import BatchNormalization
 from keras.layers.advanced_activations import LeakyReLU
+
+os.environ["TF_CPP_MIN_LOG_LEVEL"]="2"
 
 def centralize(D):
     mean = D.mean(axis=0)
@@ -222,8 +225,8 @@ print 'Y_test.shape: ', Y_test.shape
 # -----------------------------------------------------------------------------
 # Deep Convolutional Neural Network
 # -----------------------------------------------------------------------------
-batch_size = 64
-epochs = 20
+batch_size = 128
+epochs = 50
 # TE simulation: 21 classes
 num_classes = 21
 
