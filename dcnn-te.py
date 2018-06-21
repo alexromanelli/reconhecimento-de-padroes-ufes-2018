@@ -17,6 +17,18 @@ from keras.layers import Conv2D, MaxPooling2D
 from keras.layers.normalization import BatchNormalization
 from keras.layers.advanced_activations import LeakyReLU
 
+def centralize(D):
+    mean = D.mean(axis=0)
+    D_centr = D - mean
+    return D_centr
+
+def normalize(D):
+    std = D.std(axis=0)
+    std[std == 0] = 1
+    D_centr = centralize(D)
+    D_norm = D_centr / std
+    return D_norm
+
 def csvread(filename, delimiter = '\t'):
     f = open(filename, 'rb')
     reader = csv.reader(f, delimiter=delimiter)
@@ -185,6 +197,11 @@ classlabels = np.unique(ynum)
 # Remover colunas descartadas no paper
 X = np.delete(X, [4, 8, 11], axis=1)
 print(X.shape)
+
+# centralizar e normalizar os dados
+X = normalize(X)
+std = X.std(axis=0)
+print(std)
 
 # reajustar os dados para ficarem organizados em grupos de 1h
 X = np.reshape(X, (-1, 20, 50, 1))
