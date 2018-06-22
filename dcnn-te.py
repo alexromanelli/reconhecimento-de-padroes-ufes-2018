@@ -17,6 +17,7 @@ from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras.layers.normalization import BatchNormalization
 from keras.layers.advanced_activations import LeakyReLU
+from cnn_models import prepararModeloCNN
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"]="2"
 
@@ -70,6 +71,9 @@ def shuffleArrays(D, C):
     d = D[s]
     c = C[s]
     return d, c
+
+def dividirTreinamentoParaCrossValidation(D, C):
+    pass
     
 def dividirTreinamentoTeste(D, C):
     dados_treinamento = np.empty([0, 20, 50, 1])
@@ -230,40 +234,14 @@ epochs = 50
 # TE simulation: 21 classes
 num_classes = 21
 
-# Model 7
-cnn_model = Sequential()
-cnn_model.add(Conv2D(64, 
-                     kernel_size=(3, 3),
-                     activation='linear',
-                     input_shape=(20, 50, 1),
-                     padding='same'))
-cnn_model.add(LeakyReLU(alpha=0.1))
-cnn_model.add(Conv2D(64, (3, 3), 
-                     activation='linear',
-                     padding='same'))
-cnn_model.add(LeakyReLU(alpha=0.1))
-cnn_model.add(MaxPooling2D(pool_size=(2, 2),
-                           strides=2,
-                           padding='same'))
-cnn_model.add(Conv2D(128, 
-                     (3, 3), 
-                     activation='linear',
-                     padding='same'))
-cnn_model.add(LeakyReLU(alpha=0.1))                  
-cnn_model.add(MaxPooling2D(pool_size=(2, 1),
-                           strides=2,
-                           padding='same'))
-cnn_model.add(Flatten())
-cnn_model.add(Dense(300, 
-                    activation='linear'))
-cnn_model.add(LeakyReLU(alpha=0.1))           
-cnn_model.add(Dropout(0.5))       
-cnn_model.add(Dense(num_classes, 
-                    activation='softmax'))
-
-cnn_model.compile(loss=keras.losses.categorical_crossentropy, 
-                  optimizer=keras.optimizers.Adam(),
-                  metrics=['accuracy'])
-cnn_model.summary()
-
-cnn_model.fit(X_train, Y_train, batch_size=batch_size, epochs=epochs, verbose=1, validation_data=(X_test, Y_test))
+# Test all models:
+for i in range(1, 13):
+    cnn_model = prepararModeloCNN(i, num_classes)
+    cnn_model.summary()
+    cnn_model.fit(X_train, 
+                  Y_train, 
+                  batch_size=batch_size, 
+                  epochs=epochs, 
+                  verbose=1, 
+                  validation_data=(X_test, Y_test))
+    keras.backend.clear_session()
